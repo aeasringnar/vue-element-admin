@@ -22,28 +22,6 @@ export const constantRouterMap = [
     }]
   },
 
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
   {
     path: '/bannermanage',
     component: Layout,
@@ -51,69 +29,21 @@ export const constantRouterMap = [
       {
         path: 'banner',
         name: 'banner',
-        component: () => import('@/views/website/bannermanage'),
+        component: () => import('@/views/myviews/bannermanage'),
         meta: { title: 'banner 管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/bannermanagetwo',
-    component: Layout,
-    children: [
-      {
-        path: 'bannertwo',
-        name: 'bannertwo',
-        component: () => import('@/views/website/bannerbot_manage'),
-        meta: { title: '真情分享管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/tourdomesticmanage',
-    component: Layout,
-    children: [
-      {
-        path: 'tourdomestic',
-        name: 'tourdomestic',
-        component: () => import('@/views/website/tourdomestic_manage'),
-        meta: { title: '国内研学管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/tourforeignmanage',
-    component: Layout,
-    children: [
-      {
-        path: 'tourforeign',
-        name: 'tourforeign',
-        component: () => import('@/views/website/tourforeign_manage'),
-        meta: { title: '国外研学管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/dynamicmanage',
-    component: Layout,
-    children: [
-      {
-        path: 'dynamic',
-        name: 'dynamic',
-        component: () => import('@/views/website/dynamic_manage'),
-        meta: { title: '动态资讯管理', icon: 'form' }
       }
     ]
   },
   {
     path: '/tinymceDemo',
     component: Layout,
-    hidden: true,
+    // hidden: true,
     children: [
       {
         path: 'tinymce',
         name: 'tinymce',
-        component: () => import('@/views/website/tinymce_demo'),
-        meta: { title: 'tinymce', icon: 'form' }
+        component: () => import('@/views/myviews/tinymce_demo'),
+        meta: { title: 'Tinymce Demo', icon: 'form' }
       }
     ]
   },
