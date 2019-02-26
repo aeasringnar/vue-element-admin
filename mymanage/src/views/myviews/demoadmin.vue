@@ -1,12 +1,33 @@
 <template>
     <div class="app-container">
         <el-row>
-            <el-col :span="4"><el-button type="primary" @click="new_data">新增</el-button></el-col>
-            <el-col :span="20"></el-col>
+            <el-col :span="3">
+                <el-button type="primary" size="small" @click="new_data">新增</el-button>
+                <el-button size="small" @click="centerDialogVisible_patch = true">编辑</el-button>
+            </el-col>
+            <el-col :span="10"><p></p></el-col>
+            <el-col :span="4">
+                <el-select v-model="search_type" size="small" placeholder="请选择" @change="my_change" style="width: 100%">
+                    <el-option label="全部分类" value=""/>
+                    <el-option label="测试分类" value="0"/>
+                    <el-option label="测试分类" value="1"/>
+                </el-select>
+            </el-col>
+            <el-col :span="6">
+                <el-input
+                    placeholder="请输入关键字"
+                    v-model="keyword"
+                    size="small"
+                    @keyup.enter.native="to_search"
+                    @input="search_change"
+                    clearable>
+                </el-input>
+            </el-col>
+            <el-col :span="1"><el-button type="primary" size="small" @click="to_search">搜索</el-button></el-col>
         </el-row>
         <br>
         <el-table
-            :data="banner_data"
+            :data="page_datas"
             border
             stripe
             style="width: 100%">
@@ -19,11 +40,26 @@
             </el-table-column>
             <el-table-column prop="h5_url" label="链接"></el-table-column>
             <el-table-column prop="updated" label="更新时间" width="140"></el-table-column>
-            <el-table-column prop="sort" label="排序" width="80"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="200">
+            <el-table-column prop="sort" label="排序" width="80">
                 <template slot-scope="scope">
-                    <el-button size="small" @click="edit_data(scope.row)">编辑</el-button>
-                    <el-button type="danger" size="small" @click="delete_data_fuc(scope.row)">删除</el-button>
+                    <!-- :active-value="0"
+                        :inactive-value="1" -->
+                    <el-switch
+                        v-model="scope.row.sort"
+                        :active-value="0"
+                        :inactive-value="1"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"/>
+                </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                    <el-row>
+                        <el-button size="small" @click="edit_data(scope.row)">编辑</el-button>
+                    </el-row>
+                    <el-row style="margin-top: 10px;">
+                        <el-button type="danger" size="small" @click="delete_data_fuc(scope.row)">删除</el-button>
+                    </el-row>
                 </template>
           </el-table-column>
         </el-table>
@@ -36,7 +72,8 @@
             :page-sizes="[10, 20, 60, 100]"
             :page-size="my_pagination.page_size"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page_tatol">
+            :total="page_tatol"
+            background>
             </el-pagination>
         </div>
 
@@ -50,16 +87,39 @@
                     <el-form-item label="标题" prop="title">
                         <el-input v-model="ruleForm.title"></el-input>
                     </el-form-item>
-                    <el-form-item label="H5链接" prop="h5_url">
-                        <el-input v-model="ruleForm.h5_url"></el-input>
-                    </el-form-item>
                     <el-form-item label="排序" prop="sort">
                         <el-input v-model.number="ruleForm.sort"></el-input>
                     </el-form-item>
-                    <el-form-item label="图片" required>
+                    <el-form-item label="区域" prop="region">
+                        <el-select v-model="ruleForm.region" placeholder="请选择活动区域" style="width: 100%;">
+                            <el-option label="区域一" value="1"></el-option>
+                            <el-option label="区域二" value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="状态" required>
+                        <el-switch 
+                        v-model="ruleForm.is_status"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949" />
+                    </el-form-item>
+                    <el-form-item label="日期" prop="date">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date" style="width: 100%;"></el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="时间" prop="time">
+                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="ruleForm.time" style="width: 100%;"></el-time-picker>
+                    </el-form-item>
+                    <el-form-item label="类型" prop="type">
+                        <el-checkbox-group v-model="ruleForm.type">
+                            <el-checkbox label="0" name="type">类型01</el-checkbox>
+                            <el-checkbox label="1" name="type">类型02</el-checkbox>
+                            <el-checkbox label="2" name="type">类型03</el-checkbox>
+                            <el-checkbox label="3" name="type">类型04</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                    <el-form-item label="图片" prop="img_url">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://btapi.ibeatop.com/website/uploadfile"
+                            :action="action_url"
                             :headers="headers"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
@@ -67,6 +127,9 @@
                             <img v-if="ruleForm.img_url" :src="ruleForm.img_url" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
+                    </el-form-item>
+                    <el-form-item label="内容" prop="desc">
+                        <el-input type="textarea" v-model="ruleForm.desc"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -107,7 +170,7 @@
                     <el-form-item label="图片" required>
                         <el-upload
                             class="avatar-uploader"
-                            action="https://btapi.ibeatop.com/website/uploadfile"
+                            :action="action_url"
                             :headers="headers"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess_two"
@@ -130,34 +193,53 @@
     import store from '@/store'
     import Vue from 'vue'
     import { GetAjax, PostAjax, PatchAjax, DeleteAjax } from '@/api/myapi'
+    import datetime from 'date-and-time'
 
     export default {
-        name: "banner_manage",
+        name: "demo_manage",
         data () {
             return {
-                msg:'banner_manage',
                 centerDialogVisible: false,
                 centerDialogVisible_two: false,
                 centerDialogVisible_patch: false,
-                banner_data: [],
+                page_datas: [],
                 ruleForm: {
                     title: '',
                     img_url: '',
-                    banner_type: 0,
+                    region: '',
+                    type: [],
+                    is_status: false,
                     sort: '',
-                    h5_url: 'null'
+                    date: '',
+                    time: '',
+                    desc: ''
                 },
                 rules: {
                     title: [
                         { required: true, message: '请输入标题', trigger: 'blur' }
                     ],
+                    region: [
+                        { required: true, message: '请选择活动区域', trigger: 'change' }
+                    ],
+                    img_url: [
+                        { required: true, message: '请上传图片', trigger: 'change' }
+                    ],
                     sort: [
                         { required: true, type: 'number', message: '请输入排序序号', trigger: 'blur' },
                         { type: 'number', message: '必须为数字值'}
                     ],
-                    h5_url: [
-                        { required: true, message: '请输入H5链接', trigger: 'blur' }
+                    date: [
+                        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
                     ],
+                    time: [
+                        { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                    ],
+                    type: [
+                        { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+                    ],
+                    desc: [
+                        { required: true, message: '请填写活动形式', trigger: 'blur' }
+                    ]
                 },
                 ruleForm_patch: {
                     title: '',
@@ -179,27 +261,32 @@
                     ],
                 },
                 headers: {'Authorization': 'bearer ' + store.getters.token},
+                action_url: process.env.BASE_API + '/shopbase/uploadfile',
                 delete_data: {},
                 page_tatol: 100,
+                search_type: '',
+                keyword: '',
                 my_pagination: {
                     page: 1,
-                    page_size: 10
+                    page_size: 10,
+                    search_type: '',
+                    keyword: ''
                 }
             }
         },
         methods: {
-            get_banner_data(params) {
-                GetAjax('/website/banner',params).then(response => {
+            get_need_data(params) {
+                GetAjax('/shop/banner',params).then(response => {
                     const data = response.data
                     console.log(data)
-                    this.banner_data = data
+                    this.page_datas = data
                     this.page_tatol = response.tatol
                 }).catch(error => {
                     alert(error)
                 })
             },
-            post_banner_data(data) {
-                PostAjax('/website/banner',data).then(response => {
+            post_need_data(data) {
+                PostAjax('/shop/banner',data).then(response => {
                     const data = response.data
                     console.log(data)
                     this.centerDialogVisible = false
@@ -210,13 +297,13 @@
                         message: 'success',
                         type: 'success'
                     })
-                    this.get_banner_data(this.my_pagination)
+                    this.get_need_data(this.my_pagination)
                 }).catch(error => {
                     alert(error)
                 })
             },
-            patch_banner_data(data) {
-                PatchAjax('/website/banner',data).then(response => {
+            patch_need_data(data) {
+                PatchAjax('/shop/banner',data).then(response => {
                     const data = response.data
                     console.log(data)
                     this.centerDialogVisible_patch = false
@@ -225,13 +312,13 @@
                         message: 'success',
                         type: 'success'
                     })
-                    this.get_banner_data(this.my_pagination)
+                    this.get_need_data(this.my_pagination)
                 }).catch(error => {
                     alert(error)
                 })
             },
-            delete_banner_data(data) {
-                DeleteAjax('/website/banner',data).then(response => {
+            delete_need_data(data) {
+                DeleteAjax('/shop/banner',data).then(response => {
                     const data = response.data
                     console.log(data)
                     this.centerDialogVisible_two = false
@@ -240,7 +327,7 @@
                         message: 'success',
                         type: 'success'
                     })
-                    this.get_banner_data(this.my_pagination)
+                    this.get_need_data(this.my_pagination)
                 }).catch(error => {
                     alert(error)
                 })
@@ -249,11 +336,13 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         if(formName == 'ruleForm') {
+                            datetime.format(this.ruleForm.date,"YYYY-MM-DD")
+                            console.log(datetime.format(this.ruleForm.time,"hh:mm:ss"))
                             console.log(this.ruleForm)
-                            this.post_banner_data(this.ruleForm)
+                            // this.post_need_data(this.ruleForm)
                         } else{
                             console.log(this.ruleForm_patch)
-                            this.patch_banner_data(this.ruleForm_patch)
+                            // this.patch_need_data(this.ruleForm_patch)
                         }
                     } else {
                         console.log('error submit!!')
@@ -287,12 +376,12 @@
                     isJPG = true
                 }
                 console.log(isJPG)
-                const isLt2M = file.size / 1024 / 1024 < 20
+                const isLt2M = file.size / 1024 / 1024 < 2
                 if (!isJPG) {
-                        this.$message.error('Upload avatar images can only be JPG / JPEG / PNG format!')
+                        this.$message.error('允许的图片类型为 JPG / JPEG / PNG ！')
                     }
                 if (!isLt2M) {
-                    this.$message.error("Upload avatar image size can't exceed 20MB!");
+                    this.$message.error("允许的最大图片大小为 2MB！");
                 }
                 return isJPG && isLt2M;
             },
@@ -305,7 +394,7 @@
                 this.centerDialogVisible =true
             },
             true_delete() {
-                this.delete_banner_data(this.delete_data)
+                this.delete_need_data(this.delete_data)
             },
             edit_data(row) {
                 console.log(row)
@@ -319,16 +408,26 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`)
                 this.my_pagination.page_size = val
-                this.get_banner_data(this.my_pagination)
+                this.get_need_data(this.my_pagination)
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`)
                 this.my_pagination.page = val
-                this.get_banner_data(this.my_pagination)
+                this.get_need_data(this.my_pagination)
+            },
+            to_search() {
+                console.log(this.keyword)
+            },
+            search_change() {
+                console.log(this.keyword)
+            },
+            my_change(val) {
+                this.search_type = val
+                console.log(this.search_type)
             }
         },
         created: function() {
-            this.get_banner_data(this.my_pagination)
+            this.get_need_data(this.my_pagination)
         }
     }
 </script>

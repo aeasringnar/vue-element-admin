@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(username, password) {
   return request({
-    url: '/website/login',
+    url: '/shopbase/adminlogin',
     method: 'post',
     data: {
       username,
@@ -13,7 +13,7 @@ export function login(username, password) {
 
 export function getInfo() {
   return request({
-    url: '/website/userinfo',
+    url: '/shopbase/adminuserinfo',
     method: 'get'
   })
 }
