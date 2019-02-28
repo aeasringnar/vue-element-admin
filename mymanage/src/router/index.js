@@ -33,6 +33,18 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/print',
+    component: Layout,
+    children: [
+      {
+        path: 'pdemo',
+        name: 'pdemo',
+        component: () => import('@/views/myviews/printdemo'),
+        meta: { title: 'demo print', icon: 'form' }
+      }
+    ]
+  },
+  {
     path: '/tinymceDemo',
     component: Layout,
     // hidden: true,
