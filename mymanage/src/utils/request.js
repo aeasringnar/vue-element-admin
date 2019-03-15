@@ -41,8 +41,8 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
-    localStorage.removeItem('Website-Manage-Token')
+    console.log('error：' + error) // for debug
+    // localStorage.removeItem('Website-Manage-Token')
     return Promise.reject(error)
   }
 )

@@ -1,26 +1,23 @@
 import request from '@/utils/request'
 
-export function login(username, password) {
+export function login(data) {
   return request({
-    url: '/shopbase/adminlogin',
+    url: '/login/',
     method: 'post',
-    data: {
-      username,
-      password
-    }
+    data: data
   })
 }
 
 export function getInfo() {
   return request({
-    url: '/shopbase/adminuserinfo',
+    url: '/user/',
     method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/website/logout',
+    url: '/logout/',
     method: 'post'
   })
 }

@@ -6,7 +6,7 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: ''
   },
 
   mutations: {
@@ -27,9 +27,8 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
+        login(userInfo).then(response => {
           const data = response.data
           setToken(data.token)
           commit('SET_TOKEN', data.token)

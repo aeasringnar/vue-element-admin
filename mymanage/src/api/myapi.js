@@ -34,6 +34,14 @@ export function PatchAjax(url,data) {
       data: data
     })
 }
+// put 修改数据
+export function PutAjax(url,data) {
+    return request({
+      url: url,
+      method: 'put',
+      data: data
+    })
+}
 // delete 删除数据
 export function DeleteAjax(url,data) {
     return request({
