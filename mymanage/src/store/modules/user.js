@@ -35,7 +35,7 @@ const user = {
           resolve()
         }).catch(error => {
           reject(error)
-          alert(error)
+          // alert(error)
         })
       })
     },
@@ -46,14 +46,9 @@ const user = {
         getInfo().then(response => {
           const data = response.data
           console.log(data)
-          commit('SET_NAME', data.name)
-          // if (data.roles && data.roles.length > 0) {
-          //   commit('SET_ROLES', data.roles)
-          // } else {
-          //   reject('getInfo: roles must be a non-null array !')
-          // }
-          // 
-          // commit('SET_AVATAR', data.avatar)
+          commit('SET_NAME', data.username)
+          commit('SET_ROLES', data.group.group_type)
+          commit('SET_AVATAR', data.img_url)
           resolve(response)
         }).catch(error => {
           reject(error)

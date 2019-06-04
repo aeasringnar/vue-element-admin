@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="10">
+      <el-col :span="4">
         <el-button type="primary" size="small" @click="new_data">新增</el-button>
         <el-button size="small" @click="centerDialogVisible_patch = true">编辑</el-button>
       </el-col>
-      <el-col :span="4"><p/></el-col>
+      <el-col :span="10"><p/></el-col>
       <el-col :span="4">
-        <el-select v-model="my_pagination.search_type" size="small" placeholder="请选择" style="width: 100%" @change="my_change">
+        <el-select v-model="my_pagination.search_type" size="small" placeholder="请选择" style="width: 100%" @change="change_one">
           <el-option label="全部分类" value=""/>
           <el-option label="测试分类" value="0"/>
           <el-option label="测试分类" value="1"/>
         </el-select>
       </el-col>
       <el-col :span="6">
-        <mysearch v-model="my_pagination.search" @searchData="to_search"/>
+        <mysearch @searchData="to_search"/>
       </el-col>
     </el-row>
     <br>
@@ -31,7 +31,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="h5_url" label="链接"/>
-      <el-table-column prop="updated" label="更新时间" width="160"/>
+      <el-table-column prop="updated" label="更新时间" width="140"/>
       <el-table-column prop="sort" label="排序" width="80">
         <template slot-scope="scope">
           <!-- :active-value="0"
@@ -56,7 +56,10 @@
       </el-table-column>
     </el-table>
     <br>
-    <pagination :total="my_pagination.count" :page.sync="my_pagination.page" :page_size.sync="my_pagination.page_size" @pagination="pag_change"/>
+    <pagination :total="page_tatol" :page.sync="my_pagination.page" :page_size.sync="my_pagination.page_size" @pagination="pag_change"/>
+    <tinymce :upload-url="action_url" v-model="tt_html"/>
+    <el-button size="small" @click="look_tinymce">查看</el-button>
+    <el-button size="small" @click="export_xls">导出</el-button>
 
     <el-dialog
       :visible.sync="centerDialogVisible"
@@ -125,7 +128,7 @@
       title="确认删除"
       width="30%"
       center>
-      <span>是否确认删除，删除后不可恢复？</span>
+      <div style="text-align: center;">是否确认删除，删除后不可恢复？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible_two = false">取 消</el-button>
         <el-button type="primary" @click="true_delete">确 定</el-button>
@@ -169,22 +172,21 @@
     </el-dialog>
   </div>
 </template>
-<style>
-.el-table .cell .el-tooltip {
-   white-space: pre-line;
-}
-</style>
+
 <script>
 import store from '@/store'
 import Vue from 'vue'
 import { GetAjax, PostAjax, PatchAjax, DeleteAjax } from '@/api/myapi'
+import { exportXls } from '@/api/export'
 import datetime from 'date-and-time'
-import Mysearch from '@/components/SearchField/index2.vue'
 import Pagination from '@/components/Pagination'
+import Mysearch from '@/components/SearchField'
+import Tinymce from '@/components/Tinymce'
+import axios from 'axios'
 
 export default {
   name: 'DemoManage',
-  components: { Mysearch, Pagination },
+  components: { Pagination, Mysearch, Tinymce },
   data() {
     return {
       centerDialogVisible: false,
@@ -249,14 +251,15 @@ export default {
         ]
       },
       headers: { 'Authorization': 'bearer ' + store.getters.token },
-      action_url: process.env.BASE_API + '/shopbase/uploadfile',
+      action_url: process.env.BASE_API + '/uploadfile/',
+      tt_html: '',
       delete_data: {},
+      page_tatol: 100,
       my_pagination: {
         page: 1,
         page_size: 10,
         search: '',
-        search_type: '',
-        count: 0
+        search_type: ''
       }
     }
   },
@@ -265,15 +268,17 @@ export default {
   },
   methods: {
     get_need_data(params) {
-      GetAjax('/user/', params).then(response => {
+      GetAjax('/company/', params).then(response => {
         const data = response.data
         console.log(data)
         this.page_datas = data
-        this.my_pagination.count = response.tatol
+        this.page_tatol = response.count
+      }).catch(error => {
+        alert(error)
       })
     },
     post_need_data(data) {
-      PostAjax('/user/', data).then(response => {
+      PostAjax('/company/', data).then(response => {
         const data = response.data
         console.log(data)
         this.centerDialogVisible = false
@@ -285,10 +290,12 @@ export default {
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
+      }).catch(error => {
+        alert(error)
       })
     },
     patch_need_data(data) {
-      PatchAjax('/user/', data).then(response => {
+      PatchAjax('/company/' + data.id + '/', data).then(response => {
         const data = response.data
         console.log(data)
         this.centerDialogVisible_patch = false
@@ -298,10 +305,12 @@ export default {
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
+      }).catch(error => {
+        alert(error)
       })
     },
     delete_need_data(data) {
-      DeleteAjax('/user/', data).then(response => {
+      DeleteAjax('/company/' + data.id + '/', data).then(response => {
         const data = response.data
         console.log(data)
         this.centerDialogVisible_two = false
@@ -311,6 +320,8 @@ export default {
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
+      }).catch(error => {
+        alert(error)
       })
     },
     submitForm(formName) {
@@ -318,7 +329,7 @@ export default {
         if (valid) {
           if (formName == 'ruleForm') {
             datetime.format(this.ruleForm.date, 'YYYY-MM-DD')
-            console.log(datetime.format(this.ruleForm.time, 'hh:mm:ss'))
+            console.log(datetime.format(this.ruleForm.time, 'HH:mm:ss'))
             console.log(this.ruleForm)
             // this.post_need_data(this.ruleForm)
           } else {
@@ -386,29 +397,24 @@ export default {
       this.ruleForm_patch.id = row.id
       this.centerDialogVisible_patch = true
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.my_pagination.page_size = val
-      this.get_need_data(this.my_pagination)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.my_pagination.page = val
-      this.get_need_data(this.my_pagination)
-    },
-    to_search() {
-      this.my_pagination.page = 1
-      console.log(this.my_pagination.search)
-    },
     pag_change() {
       console.log(this.my_pagination)
+      this.get_need_data(this.my_pagination)
     },
-    search_change() {
-      console.log(this.my_pagination.search)
+    to_search(val) {
+      this.my_pagination.page = 1
+      this.my_pagination.search = val
+      this.get_need_data(this.my_pagination)
     },
-    my_change(val) {
-      this.my_pagination.search_type = val
-      console.log(this.my_pagination.search_type)
+    change_one(val) {
+      this.get_need_data(this.my_pagination)
+    },
+    look_tinymce() {
+      console.log('查看富文本：', this.tt_html)
+    },
+    export_xls() {
+      const export_url = process.env.BASE_API + '/confdictexport/'
+      exportXls({}, export_url, 'test.xlsx')
     }
   }
 }

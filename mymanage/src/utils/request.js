@@ -34,16 +34,39 @@ service.interceptors.response.use(
     console.log(response.data)
     console.log('response拦截器结束拦截(会拦截所有response)')
     const res = response.data
-    if (res.errorCode !== 0) {
-      return Promise.reject(res.message)
+
+    if (response.status === 201) {
+      Message({ showClose: true, message: '创建成功', type: 'success' })
+    } else if (response.status === 204) {
+      Message({ showClose: true, message: '删除成功', type: 'success' })
+    } else if (response.status === 401) {
+      return Promise.reject('请登陆')
+    } else if (response.status === 403) {
+      MessageBox({ showClose: true, message: '您没有权限', type: 'error' })
+    } else if (response.status === 404) {
+      MessageBox({ showClose: true, message: '资源不存在', type: 'error' })
+    } else if (response.status >= 300 && response.status < 400) {
+      MessageBox({ showClose: true, message: '服务器已迁移', type: 'error' })
+    } else if (response.status >= 400 && response.status < 500) {
+      MessageBox({ showClose: true, message: '请求错误', type: 'error' })
+    } else if (response.status >= 500 && response.status < 600) {
+      MessageBox({ showClose: true, message: '服务器错误', type: 'error' })
+    } else if (response.status === 200) {
+      if (res.errorCode !== 0) {
+        MessageBox({ showClose: true, message: res.message, type: 'error' })
+      } else {
+        return response.data
+      }
     } else {
-      return response.data
+      MessageBox({ showClose: true, message: '访问错误', type: 'error' })
     }
+    return response.data
   },
   error => {
     console.log('error：' + error) // for debug
     // localStorage.removeItem('Website-Manage-Token')
-    return Promise.reject(error)
+    // return Promise.reject(error)
+    alert(error)
   }
 )
 

@@ -28,10 +28,11 @@
           登 录
         </el-button>
       </el-form-item>
-      <!-- <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
-      </div> -->
+      <div class="tips">
+        <div>如果您没有登录账号，请联系人事。</div>
+        <!-- <div>邮箱：{{ email_data.length == 0? '':email_data[0].dict_title }}</div> -->
+        <!-- <div>电话：{{ phone_data.length == 0? '': phone_data[0].dict_title }}</div> -->
+      </div>
     </el-form>
   </div>
 </template>
@@ -162,10 +163,9 @@ $light_gray:#eee;
     font-size: 14px;
     color: #fff;
     margin-bottom: 10px;
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
+    text-align: center;
+    div {
+      padding: 5px;
     }
   }
   .svg-container {
