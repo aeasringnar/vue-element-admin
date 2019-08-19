@@ -1,6 +1,7 @@
 #! /bin/bash
+proj_dir="demo"
+server="127.0.0.1"
 npm run build
-
-ssh root@114.55.136.5 "rm -rf /var/www/website_manage/*"
-scp -r dist/* root@114.55.136.5:/var/www/website_manage/
-scp static/favicon.ico root@114.55.136.5:/var/www/website_manage/
+ssh root@${server} "[[ ! -d /var/www/${proj_dir}/ ]] && mkdir -p  /var/www/${proj_dir}/"
+ssh root@${server} "[[  -d /var/www/${proj_dir}/ ]] && rm -rf /var/www/${proj_dir}/*"
+scp -r dist/index.html root@${server}:/var/www/${proj_dir}/
