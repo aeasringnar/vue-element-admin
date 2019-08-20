@@ -15,6 +15,7 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 import 'babel-polyfill'
+import './utils/directives.js'
 
 Vue.use(ElementUI, { locale })
 

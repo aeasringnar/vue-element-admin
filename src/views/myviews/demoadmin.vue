@@ -58,6 +58,7 @@
 
     <el-dialog
       :visible.sync="centerDialog"
+      v-dialogDrag
       title="新增"
       width="50%"
       center>
@@ -117,6 +118,7 @@
 
     <el-dialog
       :visible.sync="centerDialog_delete"
+      v-dialogDrag
       title="确认删除"
       width="30%"
       center>
