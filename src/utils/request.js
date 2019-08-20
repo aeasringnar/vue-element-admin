@@ -53,14 +53,23 @@ service.interceptors.response.use(
       MessageBox({ showClose: true, message: '服务器错误', type: 'error' })
     } else if (response.status === 200) {
       if (res.errorCode !== 0) {
-        MessageBox({ showClose: true, message: res.message, type: 'error' })
+        // MessageBox({ showClose: true, message: res.message, type: 'error' })
+        Message({
+          showClose: true,
+          message: res.message,
+          type: 'error'
+        });
       } else {
         return response.data
       }
     } else {
-      MessageBox({ showClose: true, message: '访问错误', type: 'error' })
+      // MessageBox({ showClose: true, message: '访问错误', type: 'error' })
+      Message({
+        showClose: true,
+        message: '访问错误',
+        type: 'error'
+      });
     }
-    return response.data
   },
   error => {
     console.log('error：' + error) // for debug

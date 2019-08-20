@@ -2,12 +2,12 @@
   <div class="app-container">
     <el-row>
       <el-col :span="10">
-        <el-button type="primary" size="small" @click="new_data">新增</el-button>
-        <el-button size="small" @click="centerDialogVisible_patch = true">编辑</el-button>
+        <el-button size="small" type="primary" @click="new_data">新增</el-button>
+        <el-button size="small" @click="centerDialog_patch = true">编辑</el-button>
       </el-col>
       <el-col :span="4"><p/></el-col>
       <el-col :span="4">
-        <el-select v-model="my_pagination.search_type" size="small" placeholder="请选择" style="width: 100%" @change="my_change">
+        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="my_change">
           <el-option label="全部分类" value=""/>
           <el-option label="测试分类" value="0"/>
           <el-option label="测试分类" value="1"/>
@@ -34,9 +34,7 @@
       <el-table-column prop="updated" label="更新时间" width="160"/>
       <el-table-column prop="sort" label="排序" width="80">
         <template slot-scope="scope">
-          <!-- :active-value="0"
-                        :inactive-value="1" -->
-          <el-switch
+          <el-switch size="small"
             v-model="scope.row.sort"
             :active-value="0"
             :inactive-value="1"
@@ -50,7 +48,7 @@
             <el-button size="small" @click="edit_data(scope.row)">编辑</el-button>
           </el-row>
           <el-row style="margin-top: 10px;">
-            <el-button type="danger" size="small" @click="delete_data_fuc(scope.row)">删除</el-button>
+            <el-button size="small" type="danger" @click="delete_data_fuc(scope.row)">删除</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -59,38 +57,38 @@
     <pagination :total="my_pagination.count" :page.sync="my_pagination.page" :page_size.sync="my_pagination.page_size" @pagination="pag_change"/>
 
     <el-dialog
-      :visible.sync="centerDialogVisible"
+      :visible.sync="centerDialog"
       title="新增"
       width="50%"
       center>
       <div>
-        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="80px" class="demo-ruleForm">
+        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="ruleForm.title"/>
+            <el-input size="small" v-model="ruleForm.title"/>
           </el-form-item>
           <el-form-item label="排序" prop="sort">
-            <el-input v-model.number="ruleForm.sort"/>
+            <el-input size="small" v-model.number="ruleForm.sort"/>
           </el-form-item>
           <el-form-item label="区域" prop="region">
-            <el-select v-model="ruleForm.region" placeholder="请选择活动区域" style="width: 100%;">
+            <el-select size="small" v-model="ruleForm.region" placeholder="请选择活动区域" filterable clearable style="width: 100%;">
               <el-option label="区域一" value="1"/>
               <el-option label="区域二" value="2"/>
             </el-select>
           </el-form-item>
           <el-form-item label="状态" required>
-            <el-switch
+            <el-switch size="small"
               v-model="ruleForm.is_status"
               active-color="#13ce66"
               inactive-color="#ff4949" />
           </el-form-item>
           <el-form-item label="日期" prop="date">
-            <el-date-picker v-model="ruleForm.date" type="date" placeholder="选择日期" style="width: 100%;"/>
+            <el-date-picker size="small" v-model="ruleForm.date" type="date" placeholder="选择日期" style="width: 100%;"/>
           </el-form-item>
           <el-form-item label="时间" prop="time">
-            <el-time-picker v-model="ruleForm.time" type="fixed-time" placeholder="选择时间" style="width: 100%;"/>
+            <el-time-picker size="small" v-model="ruleForm.time" type="fixed-time" placeholder="选择时间" style="width: 100%;"/>
           </el-form-item>
           <el-form-item label="类型" prop="type">
-            <el-checkbox-group v-model="ruleForm.type">
+            <el-checkbox-group size="small" v-model="ruleForm.type">
               <el-checkbox label="0" name="type">类型01</el-checkbox>
               <el-checkbox label="1" name="type">类型02</el-checkbox>
               <el-checkbox label="2" name="type">类型03</el-checkbox>
@@ -98,80 +96,54 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="图片" prop="img_url">
-            <el-upload
-              :action="action_url"
-              :headers="headers"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-              class="avatar-uploader">
-              <img v-if="ruleForm.img_url" :src="ruleForm.img_url" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            </el-upload>
+            <upload-image v-model="ruleForm.img_url"/>
           </el-form-item>
-          <el-form-item label="内容" prop="desc">
-            <el-input v-model="ruleForm.desc" type="textarea"/>
+          <el-form-item label="文件" prop="rule_file">
+            <upload-file v-model="ruleForm.rule_file"/>
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-input size="small" v-model="ruleForm.desc" type="textarea"/>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('ruleForm')">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+        <el-button size="small" @click="resetForm('ruleForm')">取 消</el-button>
+        <el-button size="small" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
-      :visible.sync="centerDialogVisible_two"
+      :visible.sync="centerDialog_delete"
       title="确认删除"
       width="30%"
       center>
       <span>是否确认删除，删除后不可恢复？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible_two = false">取 消</el-button>
-        <el-button type="primary" @click="true_delete">确 定</el-button>
+        <el-button size="small" @click="centerDialog_delete = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="true_delete">确 定</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
-      :visible.sync="centerDialogVisible_patch"
+      :visible.sync="centerDialog_patch"
       title="编辑"
       width="50%"
       center>
       <div>
-        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules_patch" label-width="80px" class="demo-ruleForm">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="ruleForm_patch.title"/>
-          </el-form-item>
-          <el-form-item label="H5链接" prop="h5_url">
-            <el-input v-model="ruleForm_patch.h5_url"/>
-          </el-form-item>
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model.number="ruleForm_patch.sort"/>
-          </el-form-item>
-          <el-form-item label="图片" required>
-            <el-upload
-              :action="action_url"
-              :headers="headers"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess_two"
-              :before-upload="beforeAvatarUpload"
-              class="avatar-uploader">
-              <img v-if="ruleForm_patch.img_url" :src="ruleForm_patch.img_url" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            </el-upload>
-          </el-form-item>
+        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules_patch" label-width="100px">
+          
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('ruleForm_patch')">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm_patch')">确 定</el-button>
+        <el-button size="small" @click="resetForm('ruleForm_patch')">取 消</el-button>
+        <el-button size="small" type="primary" @click="submitForm('ruleForm_patch')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <style>
 .el-table .cell .el-tooltip {
-   white-space: pre-line;
+  white-space: pre-line;
 }
 </style>
 <script>
@@ -181,19 +153,22 @@ import { GetAjax, PostAjax, PatchAjax, DeleteAjax } from '@/api/myapi'
 import datetime from 'date-and-time'
 import Mysearch from '@/components/SearchField/index2.vue'
 import Pagination from '@/components/Pagination'
+import UploadImage from '@/components/Upload/singleImage.vue'
+import UploadFile from '@/components/Upload/singleFile.vue'
 
 export default {
   name: 'DemoManage',
-  components: { Mysearch, Pagination },
+  components: { Mysearch, Pagination, UploadImage, UploadFile },
   data() {
     return {
-      centerDialogVisible: false,
-      centerDialogVisible_two: false,
-      centerDialogVisible_patch: false,
+      centerDialog: false,
+      centerDialog_delete: false,
+      centerDialog_patch: false,
       page_datas: [],
       ruleForm: {
         title: '',
         img_url: '',
+        rule_file: '',
         region: '',
         type: [],
         is_status: false,
@@ -230,33 +205,18 @@ export default {
         ]
       },
       ruleForm_patch: {
-        title: '',
-        img_url: '',
-        banner_type: 0,
-        sort: '',
-        h5_url: 'null'
+        
       },
       rules_patch: {
-        title: [
-          { required: true, message: '请输入标题', trigger: 'blur' }
-        ],
-        sort: [
-          { required: true, type: 'number', message: '请输入排序序号', trigger: 'blur' },
-          { type: 'number', message: '必须为数字值' }
-        ],
-        h5_url: [
-          { required: true, message: '请输入H5链接', trigger: 'blur' }
-        ]
+        
       },
-      headers: { 'Authorization': 'bearer ' + store.getters.token },
-      action_url: process.env.BASE_API + '/shopbase/uploadfile',
       delete_data: {},
       my_pagination: {
         page: 1,
         page_size: 10,
+        count: 0,
         search: '',
         search_type: '',
-        count: 0
       }
     }
   },
@@ -269,19 +229,19 @@ export default {
         const data = response.data
         console.log(data)
         this.page_datas = data
-        this.my_pagination.count = response.tatol
+        // this.my_pagination.count = response.tatol
+        this.my_pagination.count = 100
       })
     },
     post_need_data(data) {
       PostAjax('/user/', data).then(response => {
         const data = response.data
         console.log(data)
-        this.centerDialogVisible = false
+        this.centerDialog = false
         this.$refs['ruleForm'].resetFields()
-        this.ruleForm.img_url = ''
         this.$message({
           showClose: true,
-          message: 'success',
+          message: '新增成功！',
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
@@ -291,10 +251,11 @@ export default {
       PatchAjax('/user/', data).then(response => {
         const data = response.data
         console.log(data)
-        this.centerDialogVisible_patch = false
+        this.centerDialog_patch = false
+        this.$refs['ruleForm'].resetFields()
         this.$message({
           showClose: true,
-          message: 'success',
+          message: '修改成功！',
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
@@ -304,10 +265,10 @@ export default {
       DeleteAjax('/user/', data).then(response => {
         const data = response.data
         console.log(data)
-        this.centerDialogVisible_two = false
+        this.centerDialog_delete = false
         this.$message({
           showClose: true,
-          message: 'success',
+          message: '删除成功！',
           type: 'success'
         })
         this.get_need_data(this.my_pagination)
@@ -317,8 +278,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (formName == 'ruleForm') {
-            datetime.format(this.ruleForm.date, 'YYYY-MM-DD')
-            console.log(datetime.format(this.ruleForm.time, 'hh:mm:ss'))
+            // datetime.format(this.ruleForm.date, 'YYYY-MM-DD')
+            // console.log(datetime.format(this.ruleForm.time, 'hh:mm:ss'))
             console.log(this.ruleForm)
             // this.post_need_data(this.ruleForm)
           } else {
@@ -331,52 +292,28 @@ export default {
         }
       })
     },
+    // form数据验证
     resetForm(formName) {
       console.log(formName)
-      this.centerDialogVisible = false
+      this.centerDialog = false
+      this.centerDialog_patch = false
       this.$refs[formName].resetFields()
-      this.ruleForm.img_url = ''
-      this.centerDialogVisible_patch = false
-      this.ruleForm_patch.img_url = ''
     },
-    handleAvatarSuccess(res, file) {
-      // this.ruleForm.img_url = URL.createObjectURL(file.raw)
-      this.ruleForm.img_url = file.response.data[0]
-      console.log(file.response.data[0])
-    },
-    handleAvatarSuccess_two(res, file) {
-      // this.ruleForm.img_url = URL.createObjectURL(file.raw)
-      this.ruleForm_patch.img_url = file.response.data[0]
-      console.log(file.response.data[0])
-    },
-    beforeAvatarUpload(file) {
-      var img_type = ['image/jpeg', 'image/jpg', 'image/png']
-      var img_index = img_type.indexOf(file.type)
-      var isJPG = false
-      if (img_index != -1) {
-        isJPG = true
-      }
-      console.log(isJPG)
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('允许的图片类型为 JPG / JPEG / PNG ！')
-      }
-      if (!isLt2M) {
-        this.$message.error('允许的最大图片大小为 2MB！')
-      }
-      return isJPG && isLt2M
-    },
+    // 删除按钮
     delete_data_fuc(row) {
       console.log(row)
       this.delete_data = row
-      this.centerDialogVisible_two = true
+      this.centerDialog_delete = true
     },
+    // 新增按钮
     new_data() {
-      this.centerDialogVisible = true
+      this.centerDialog = true
     },
+    // 确定删除按钮
     true_delete() {
       this.delete_need_data(this.delete_data)
     },
+    // 编辑按钮
     edit_data(row) {
       console.log(row)
       this.ruleForm_patch.title = row.title
@@ -384,31 +321,27 @@ export default {
       this.ruleForm_patch.sort = row.sort
       this.ruleForm_patch.img_url = row.img_url
       this.ruleForm_patch.id = row.id
-      this.centerDialogVisible_patch = true
+      this.centerDialog_patch = true
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.my_pagination.page_size = val
-      this.get_need_data(this.my_pagination)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.my_pagination.page = val
-      this.get_need_data(this.my_pagination)
-    },
+    // 搜索层相关
     to_search() {
       this.my_pagination.page = 1
       console.log(this.my_pagination.search)
+      // this.get_need_data(this.my_pagination)
     },
     pag_change() {
       console.log(this.my_pagination)
+      // this.get_need_data(this.my_pagination)
     },
     search_change() {
       console.log(this.my_pagination.search)
+      this.get_need_data(this.my_pagination)
     },
     my_change(val) {
+      this.my_pagination.page = 1
       this.my_pagination.search_type = val
       console.log(this.my_pagination.search_type)
+      this.get_need_data(this.my_pagination)
     }
   }
 }

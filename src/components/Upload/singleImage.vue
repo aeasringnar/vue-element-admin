@@ -39,8 +39,6 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(file.response.data[0])
       this.$emit('input', file.response.data[0])
-      // this.img_url = file.response.data[0]
-      // this.$emit('update:img_url', file.response.data[0])
     },
     beforeAvatarUpload(file) {
       var img_type = ['image/jpeg', 'image/jpg', 'image/png']

@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Website-Manage-Token'
+const TokenKey = 'Aeas-Manage-Token'
 
 export function getToken() {
   return localStorage.getItem(TokenKey)
