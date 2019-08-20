@@ -2,7 +2,7 @@
     <div class="app-container">
         <el-row>
             <el-col :span="3">
-                <el-button type="primary" size="small" @click="my_print">打印</el-button>
+                <el-button size="small" type="primary" @click="my_print">打印</el-button>
             </el-col>
             <el-col :span="21"><p></p></el-col>
         </el-row>
@@ -42,8 +42,8 @@
                  <div class="piao-title">多谢惠顾</div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="centerDialogVisible_two = false">取 消</el-button>
-                <el-button type="primary" @click="to_print">确 定</el-button>
+                <el-button size="small" @click="centerDialogVisible_two = false">取 消</el-button>
+                <el-button size="small" type="primary" @click="to_print">确 定</el-button>
             </span>
         </el-dialog>
     </div>

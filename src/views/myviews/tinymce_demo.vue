@@ -29,6 +29,7 @@ export default {
   name: 'tinymce',
   data () {
     return {
+      uploadUrl: process.env.BASE_API + '/uploadfile/',
       headers: {'Authorization': 'bearer ' + store.getters.token},
       tinymceHtml: `<h1 style="text-align: center;">Welcome to the &nbsp;demo!</h1>
 <p style="text-align: center; font-size: 15px;"><img title="TinyMCE Logo" src="//www.tinymce.com/images/glyph-tinymce@2x.png" alt="TinyMCE Logo" width="110" height="97" /></p>
@@ -85,7 +86,7 @@ export default {
         let formdata = new FormData()
         formdata.set('upload_file', blobInfo.blob())
         var new_headers = { headers: this.headers}
-        axios.post(process.env.BASE_API + '/website/uploadfile', formdata, new_headers).then(res => {
+        axios.post(uploadUrl, formdata, new_headers).then(res => {
           // console.log(res.data.data)
           success(res.data.data[0])
         }).catch(res => {

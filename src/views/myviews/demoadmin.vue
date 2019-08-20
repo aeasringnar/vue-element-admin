@@ -104,6 +104,9 @@
           <el-form-item label="内容">
             <el-input size="small" v-model="ruleForm.desc" type="textarea"/>
           </el-form-item>
+          <el-form-item label="富文本编辑器" prop="rule_h5">
+            <!-- <tinymce v-model="ruleForm.rule_h5"/> -->
+          </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -155,6 +158,7 @@ import Mysearch from '@/components/SearchField/index2.vue'
 import Pagination from '@/components/Pagination'
 import UploadImage from '@/components/Upload/singleImage.vue'
 import UploadFile from '@/components/Upload/singleFile.vue'
+// import Tinymce from '@/components/Tinymce/index.vue'
 
 export default {
   name: 'DemoManage',
@@ -169,6 +173,7 @@ export default {
         title: '',
         img_url: '',
         rule_file: '',
+        rule_h5: '',
         region: '',
         type: [],
         is_status: false,
