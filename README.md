@@ -1,4 +1,4 @@
-# vue_admin_template
+# vue-element-admin
 
 这是一个 基于 Vue 2.X + element-UI的后台管理项目模板，用于快速构建企业级高性能的后台系统。
 
