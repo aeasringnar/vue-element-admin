@@ -14,6 +14,7 @@ function creatRouter(obj_list) {
     str += `
   {
     path: '/${obj_list[i].dir_name}',
+    meta: { title: '${obj_list[i].dir_name}', icon: 'form' },
     component: Layout,
     children: [
       ${childPath}
