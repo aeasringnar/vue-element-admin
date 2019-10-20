@@ -38,9 +38,9 @@ var obj_list = [
 
 
 // 写入vue文件的函数
-function writeCode(dir_path, data) {
+function writeCode(dir_path, data, dir_name) {
     const file_path = dir_path + '/' + data.object_name + '.vue'
-    fs.writeFile(file_path, vueCode.creatCode(data), (err) => {
+    fs.writeFile(file_path, vueCode.creatCode(data, dir_name), (err) => {
         if (err) throw err;
         console.log('文件:' + String(file_path) + '已被保存...');
     });
@@ -64,7 +64,7 @@ function creatCode(obj_list) {
         fs.mkdir(dir_path, { recursive: true }, (err) => {
             if (err) throw err;
             for (let j in obj_list[i].childs) {
-                writeCode(dir_path, obj_list[i].childs[j])
+                writeCode(dir_path, obj_list[i].childs[j], obj_list[i].dir_name)
             }
             writeRouter(router_path, router.creatRouter(obj_list))
         });

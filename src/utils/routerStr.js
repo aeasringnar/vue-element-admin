@@ -6,7 +6,7 @@ function creatRouter(obj_list) {
       childPath += `
       {
         path: '${obj_list[i].childs[j].object_name}',
-        name: '${obj_list[i].childs[j].object_name}',
+        name: '${obj_list[i].dir_name}_${obj_list[i].childs[j].object_name}',
         component: () => import('@/views/${obj_list[i].dir_name}/${obj_list[i].childs[j].object_name}'),
         meta: { title: '${obj_list[i].childs[j].object_name}', icon: 'form' }
       },`
