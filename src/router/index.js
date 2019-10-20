@@ -14,13 +14,14 @@ export const constantRouterMap = [
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard', noCache: true }
+      component: () => import('@/views/userinfo/index'),
+      meta: { title: '个人信息', icon: 'dashboard', noCache: true }
     }]
   },
   {
     path: '/demoadmin',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'demo',
@@ -33,6 +34,7 @@ export const constantRouterMap = [
   {
     path: '/print',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'pdemo',
@@ -45,7 +47,7 @@ export const constantRouterMap = [
   {
     path: '/tinymceDemo',
     component: Layout,
-    // hidden: true,
+    hidden: true,
     children: [
       {
         path: 'tinymce',
@@ -53,6 +55,25 @@ export const constantRouterMap = [
         component: () => import('@/views/myviews/tinymce_demo'),
         meta: { title: 'Tinymce Demo', icon: 'form' }
       }
+    ]
+  },
+  {
+    path: '/system',
+    meta: { title: '系统管理', icon: 'form' },
+    component: Layout,
+    children: [
+      {
+        path: 'user',
+        name: 'user',
+        component: () => import('@/views/system/user'),
+        meta: { title: '用户管理', icon: 'form' }
+      },
+      {
+        path: 'auth',
+        name: 'auth',
+        component: () => import('@/views/system/auth'),
+        meta: { title: '权限管理', icon: 'form' }
+      },
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
