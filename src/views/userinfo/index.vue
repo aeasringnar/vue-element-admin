@@ -109,7 +109,7 @@ export default {
         const data = response.data
         console.log(data)
         this.centerDialog_patch = false
-        this.$refs['ruleForm_patch'].resetFields()
+        // this.$refs['ruleForm_patch'].resetFields()
         this.$message({
           showClose: true,
           message: '修改成功！',

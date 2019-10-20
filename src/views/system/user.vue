@@ -61,8 +61,8 @@
           </el-form-item>
           <el-form-item label="角色" prop="group">
             <el-select size="small" v-model="ruleForm.group" placeholder="请选择角色" filterable clearable style="width: 100%;">
+              <el-option label="超级管理员" :value="1"/>
               <el-option label="管理员" :value="2"/>
-              <el-option label="普通用户" :value="3"/>
             </el-select>
           </el-form-item>
           <el-form-item label="权限" prop="auth">
@@ -126,8 +126,8 @@
           </el-form-item>
           <el-form-item label="角色" prop="group">
             <el-select size="small" v-model="ruleForm_patch.group" placeholder="请选择角色" filterable clearable style="width: 100%;">
+              <el-option label="超级管理员" :value="1"/>
               <el-option label="管理员" :value="2"/>
-              <el-option label="普通用户" :value="3"/>
             </el-select>
           </el-form-item>
           <el-form-item label="权限" prop="auth">
@@ -279,7 +279,7 @@ export default {
         const data = response.data
         console.log(data)
         this.centerDialog_patch = false
-        this.$refs['ruleForm'].resetFields()
+        // this.$refs['ruleForm_patch'].resetFields()
         this.$message({
           showClose: true,
           message: '修改成功！',
@@ -311,7 +311,7 @@ export default {
             this.post_need_data(this.ruleForm)
           } else {
             console.log(this.ruleForm_patch)
-            // this.patch_need_data(this.ruleForm_patch)
+            this.patch_need_data(this.ruleForm_patch)
           }
         } else {
           console.log('error submit!!')

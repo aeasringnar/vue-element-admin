@@ -212,30 +212,6 @@ export default {
             auth_create: false,
             auth_update: false,
             auth_destroy: false
-          },
-          {
-            object_name: 'flowgroup',
-            object_name_cn: '审批组管理',
-            auth_list: false,
-            auth_create: false,
-            auth_update: false,
-            auth_destroy: false
-          },
-          {
-            object_name: 'approvalflow',
-            object_name_cn: '审批管理',
-            auth_list: false,
-            auth_create: false,
-            auth_update: false,
-            auth_destroy: false
-          },
-          {
-            object_name: 'flowbody',
-            object_name_cn: '审批主体',
-            auth_list: false,
-            auth_create: false,
-            auth_update: false,
-            auth_destroy: false
           }
         ]
       },
