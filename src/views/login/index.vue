@@ -20,7 +20,7 @@
           placeholder="请输入密码"
           @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye" />
+          <svg-icon :icon-class="show_icon" />
         </span>
       </el-form-item>
       <el-form-item>
@@ -68,7 +68,8 @@ export default {
       },
       loading: false,
       pwdType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      show_icon: 'eye'
     }
   },
   watch: {
@@ -83,8 +84,10 @@ export default {
     showPwd() {
       if (this.pwdType === 'password') {
         this.pwdType = ''
+        this.show_icon = 'eye_show'
       } else {
         this.pwdType = 'password'
+        this.show_icon = 'eye'
       }
     },
     handleLogin() {
