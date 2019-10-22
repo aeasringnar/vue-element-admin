@@ -38,8 +38,7 @@ function creatCode(obj, dir_name) {
       <el-col :span="4">
         <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="my_change">
           <el-option label="全部分类" value=""/>
-          <el-option label="测试分类" value="0"/>
-          <el-option label="测试分类" value="1"/>
+          <el-option v-for="data in select_type" :key="data.key" :label="data.name" :value="data.key"/>
         </el-select>
       </el-col>
       <el-col :span="6">
@@ -235,7 +234,17 @@ export default {
         count: 0,
         search: '',
         search_type: '',
-      }
+      },
+      select_type: [
+        {
+          key: '0',
+          name:'分类一'
+        },
+        {
+          key: '1',
+          name:'分类二'
+        }
+      ]
     }
   },
   created: function() {
@@ -245,16 +254,16 @@ export default {
     get_need_data(params) {
       GetAjax('/${obj.object_name}/', params).then(response => {
         const data = response.data
-        console.log(data)
+        console.log('得到列表数据：',data)
         this.page_datas = data
-        // this.my_pagination.count = response.tatol
-        this.my_pagination.count = 100
+        this.my_pagination.count = response.count
+        // this.my_pagination.count = 100
       })
     },
     post_need_data(data) {
       PostAjax('/${obj.object_name}/', data).then(response => {
         const data = response.data
-        console.log(data)
+        // console.log(data)
         this.centerDialog = false
         this.$refs['ruleForm'].resetFields()
         this.$message({
@@ -268,7 +277,7 @@ export default {
     patch_need_data(data) {
       PatchAjax('/${obj.object_name}/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
+        // console.log(data)
         this.centerDialog_patch = false
         this.$refs['ruleForm_patch'].resetFields()
         this.$message({
@@ -282,7 +291,7 @@ export default {
     delete_need_data(data) {
       DeleteAjax('/${obj.object_name}/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
+        // console.log(data)
         this.centerDialog_delete = false
         this.$message({
           showClose: true,
@@ -312,7 +321,6 @@ export default {
     },
     // form数据验证
     resetForm(formName) {
-      console.log(formName)
       this.centerDialog = false
       this.centerDialog_patch = false
       this.$refs[formName].resetFields()
@@ -334,31 +342,27 @@ export default {
     // 编辑按钮
     edit_data(row) {
       console.log(row)
-      this.ruleForm_patch.title = row.title
-      this.ruleForm_patch.h5_url = row.h5_url
-      this.ruleForm_patch.sort = row.sort
-      this.ruleForm_patch.img_url = row.img_url
-      this.ruleForm_patch.id = row.id
+      this.ruleForm_patch = JSON.parse(JSON.stringify(row))
       this.centerDialog_patch = true
     },
     // 搜索层相关
     to_search() {
       this.my_pagination.page = 1
-      console.log(this.my_pagination.search)
-      // this.get_need_data(this.my_pagination)
+      // console.log(this.my_pagination.search)
+      this.get_need_data(this.my_pagination)
     },
     pag_change() {
-      console.log(this.my_pagination)
-      // this.get_need_data(this.my_pagination)
+      // console.log(this.my_pagination)
+      this.get_need_data(this.my_pagination)
     },
     search_change() {
-      console.log(this.my_pagination.search)
+      // console.log(this.my_pagination.search)
       this.get_need_data(this.my_pagination)
     },
     my_change(val) {
       this.my_pagination.page = 1
       this.my_pagination.search_type = val
-      console.log(this.my_pagination.search_type)
+      // console.log(this.my_pagination.search_type)
       this.get_need_data(this.my_pagination)
     }
   }

@@ -8,13 +8,13 @@ function creatRouter(obj_list) {
         path: '${obj_list[i].childs[j].object_name}',
         name: '${obj_list[i].dir_name}_${obj_list[i].childs[j].object_name}',
         component: () => import('@/views/${obj_list[i].dir_name}/${obj_list[i].childs[j].object_name}'),
-        meta: { title: '${obj_list[i].childs[j].object_name}', icon: 'form' }
+        meta: { title: '${obj_list[i].childs[j].object_name_cn}', icon: 'form' }
       },`
     }
     str += `
   {
     path: '/${obj_list[i].dir_name}',
-    meta: { title: '${obj_list[i].dir_name}', icon: 'form' },
+    meta: { title: '${obj_list[i].dir_name_cn}', icon: 'form' },
     component: Layout,
     children: [
       ${childPath}

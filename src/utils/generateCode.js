@@ -10,27 +10,45 @@ const router = require('./routerStr');
 var obj_list = [
     {
         dir_name:'system',
+        dir_name_cn:'系统管理',
         childs: [
             {
                 object_name:'group',
-                fields:[{prop:'id',label:'ID'},{prop:'group_type',label:'角色类型'}]
+                object_name_cn:'用户组管理',
+                fields:[
+                    {prop:'id',label:'ID'},
+                    {prop:'group_type',label:'角色类型'},
+                ]
             },
             {
                 object_name:'user',
-                fields:[{prop:'id',label:'ID'},{prop:'username',label:'用户名'}]
+                object_name_cn:'用户管理',
+                fields:[
+                    {prop:'id',label:'ID'},
+                    {prop:'username',label:'用户名'}
+                ]
             }
         ]
     },
     {
         dir_name:'info',
+        dir_name_cn:'信息管理',
         childs: [
             {
                 object_name:'company',
-                fields:[{prop:'id',label:'ID'},{prop:'name',label:'公司名称'}]
+                object_name_cn:'公司管理',
+                fields:[
+                    {prop:'id',label:'ID'},
+                    {prop:'name',label:'公司名称'}
+                ]
             },
             {
                 object_name:'employ',
-                fields:[{prop:'id',label:'ID'},{prop:'real_name',label:'员工名称'}]
+                object_name_cn:'员工管理',
+                fields:[
+                    {prop:'id',label:'ID'},
+                    {prop:'real_name',label:'员工名称'}
+                ]
             }
         ]
     }
