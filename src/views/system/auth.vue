@@ -183,13 +183,14 @@ import { GetAjax, PostAjax, PatchAjax, DeleteAjax } from '@/api/myapi'
 import datetime from 'date-and-time'
 import Mysearch from '@/components/SearchField/index2.vue'
 import Pagination from '@/components/Pagination'
-import UploadImage from '@/components/Upload/singleImage.vue'
-import UploadFile from '@/components/Upload/singleFile.vue'
+import UploadImage from '@/components/Upload/singleImage.vue'// 单一图片
+import MultiImage from '@/components/Upload/multiImage.vue' // 多张图片 limit 默认为5张
+import UploadFile from '@/components/Upload/singleFile.vue' // 单一&多个文件 由limit参数 控制 默认为3个
 // import Tinymce from '@/components/Tinymce/index.vue'
 
 export default {
   name: 'authManage',
-  components: { Mysearch, Pagination, UploadImage, UploadFile },
+  components: { Mysearch, Pagination, UploadImage, MultiImage, UploadFile },
   data() {
     return {
       centerDialog: false,
