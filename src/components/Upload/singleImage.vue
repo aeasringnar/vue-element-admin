@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      console.log(file.response.data[0])
+      console.log('图片地址：',file.response.data[0])
       this.$emit('input', file.response.data[0])
     },
     beforeAvatarUpload(file) {
@@ -47,7 +47,6 @@ export default {
       if (img_index !== -1) {
         isJPG = true
       }
-      console.log(isJPG)
       const isLt2M = file.size / 1024 / 1024 < 10
       if (!isJPG) {
         this.$message.error('允许的图片类型为 JPG / JPEG / PNG ！')

@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="8"><p/></el-col>
       <!-- <el-col :span="4">
-        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="my_change">
+        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="filter_change">
           <el-option label="全部分类" value=""/>
           <el-option label="测试分类" value="0"/>
           <el-option label="测试分类" value="1"/>
@@ -18,9 +18,10 @@
         <mysearch v-model="my_pagination.search" @searchData="to_search"/>
       </el-col>
     </el-row>
-    <br>
+    <!-- <br> -->
     <el-table
       :data="page_datas"
+      height="calc(100vh - 230px)"
       border
       stripe
       style="width: 100%">
@@ -49,7 +50,7 @@
       :visible.sync="centerDialog"
       v-dialogDrag
       title="新增"
-      width="50%"
+      width="60%"
       center>
       <div>
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px">
@@ -104,17 +105,18 @@
       title="确认删除"
       width="30%"
       center>
-      <span>是否确认删除，删除后不可恢复？</span>
+      <div style="text-align: center;">是否确认删除，删除后不可恢复？</div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="centerDialog_delete = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="true_delete">确 定</el-button>
+        <el-button size="small" type="danger" @click="true_delete">确 定</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
       :visible.sync="centerDialog_patch"
+      v-dialogDrag
       title="编辑"
-      width="50%"
+      width="60%"
       center>
       <div>
         <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules" label-width="100px">
@@ -165,7 +167,7 @@
   </div>
 </template>
 <style>
-.el-table .cell .el-tooltip {
+.el-table .cell {
   white-space: pre-line;
 }
 </style>
@@ -246,24 +248,21 @@ export default {
   },
   methods: {
     get_need_data(params) {
-      GetAjax('/user/', params).then(response => {
+      GetAjax('/system/users/', params).then(response => {
         const data = response.data
-        console.log(data)
+        console.log('得到列表数据：',data)
         this.page_datas = data
         this.my_pagination.count = response.count
       })
     },
     get_auth_data(params) {
-      GetAjax('/auth/', params).then(response => {
-        const data = response.data
-        console.log(data)
-        this.auth_datas = data
+      GetAjax('/system/auths/', params).then(response => {
+        this.auth_datas = response.data
       })
     },
     post_need_data(data) {
       PostAjax('/user/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog = false
         this.$refs['ruleForm'].resetFields()
         this.$message({
@@ -277,9 +276,7 @@ export default {
     patch_need_data(data) {
       PatchAjax('/user/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog_patch = false
-        // this.$refs['ruleForm_patch'].resetFields()
         this.$message({
           showClose: true,
           message: '修改成功！',
@@ -291,7 +288,6 @@ export default {
     delete_need_data(data) {
       DeleteAjax('/user/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog_delete = false
         this.$message({
           showClose: true,
@@ -328,8 +324,8 @@ export default {
     },
     // 删除按钮
     delete_data_fuc(row) {
-      console.log(row)
-      this.delete_data = row
+      this.delete_data = { id: row.id }
+      console.log(this.delete_data)
       this.centerDialog_delete = true
     },
     // 新增按钮
@@ -353,21 +349,16 @@ export default {
     // 搜索层相关
     to_search() {
       this.my_pagination.page = 1
-      console.log(this.my_pagination.search)
       this.get_need_data(this.my_pagination)
     },
+    // 分页相关
     pag_change() {
-      console.log(this.my_pagination)
       this.get_need_data(this.my_pagination)
     },
-    search_change() {
-      console.log(this.my_pagination.search)
-      this.get_need_data(this.my_pagination)
-    },
-    my_change(val) {
+    // 过滤相关
+    filter_change(val) {
       this.my_pagination.page = 1
       this.my_pagination.search_type = val
-      console.log(this.my_pagination.search_type)
       this.get_need_data(this.my_pagination)
     }
   }

@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="8"><p/></el-col>
       <!-- <el-col :span="4">
-        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="my_change">
+        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="filter_change">
           <el-option label="全部分类" value=""/>
           <el-option label="测试分类" value="0"/>
           <el-option label="测试分类" value="1"/>
@@ -18,9 +18,10 @@
         <mysearch v-model="my_pagination.search" @searchData="to_search"/>
       </el-col>
     </el-row>
-    <br>
+    <!-- <br> -->
     <el-table
       :data="page_datas"
+      height="calc(100vh - 230px)"
       border
       stripe
       style="width: 100%">
@@ -49,7 +50,7 @@
       :visible.sync="centerDialog"
       v-dialogDrag
       title="新增"
-      width="50%"
+      width="60%"
       center>
       <div>
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px">
@@ -110,17 +111,18 @@
       title="确认删除"
       width="30%"
       center>
-      <span>是否确认删除，删除后不可恢复？</span>
+      <div style="text-align: center;">是否确认删除，删除后不可恢复？</div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="centerDialog_delete = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="true_delete">确 定</el-button>
+        <el-button size="small" type="danger" @click="true_delete">确 定</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
       :visible.sync="centerDialog_patch"
+      v-dialogDrag
       title="编辑"
-      width="50%"
+      width="60%"
       center>
       <div>
         <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules_patch" label-width="100px">
@@ -252,7 +254,6 @@ export default {
     post_need_data(data) {
       PostAjax('/auth/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog = false
         this.$refs['ruleForm'].resetFields()
         this.$message({
@@ -266,9 +267,7 @@ export default {
     patch_need_data(data) {
       PatchAjax('/auth/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog_patch = false
-        // this.$refs['ruleForm_path'].resetFields()
         this.$message({
           showClose: true,
           message: '修改成功！',
@@ -280,7 +279,6 @@ export default {
     delete_need_data(data) {
       DeleteAjax('/auth/' + data.id + '/', data).then(response => {
         const data = response.data
-        console.log(data)
         this.centerDialog_delete = false
         this.$message({
           showClose: true,
@@ -294,8 +292,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (formName == 'ruleForm') {
-            // datetime.format(this.ruleForm.date, 'YYYY-MM-DD')
-            // console.log(datetime.format(this.ruleForm.time, 'hh:mm:ss'))
             console.log(this.ruleForm)
             this.post_need_data(this.ruleForm)
           } else {
@@ -317,8 +313,8 @@ export default {
     },
     // 删除按钮
     delete_data_fuc(row) {
-      console.log(row)
-      this.delete_data = row
+      this.delete_data = {id: row.id}
+      console.log(this.delete_data)
       this.centerDialog_delete = true
     },
     // 新增按钮
@@ -350,25 +346,20 @@ export default {
     // 搜索层相关
     to_search() {
       this.my_pagination.page = 1
-      console.log(this.my_pagination.search)
       this.get_need_data(this.my_pagination)
     },
+    // 分页相关
     pag_change() {
-      console.log(this.my_pagination)
       this.get_need_data(this.my_pagination)
     },
-    search_change() {
-      console.log(this.my_pagination.search)
-      this.get_need_data(this.my_pagination)
-    },
-    my_change(val) {
+    // 过滤相关
+    filter_change(val) {
       this.my_pagination.page = 1
       this.my_pagination.search_type = val
-      console.log(this.my_pagination.search_type)
       this.get_need_data(this.my_pagination)
     },
+    // 权限按钮
     all_change(val) {
-      console.log(val)
       if (val) {
         for (var i in this.ruleForm.auth_permissions) {
           if (this.ruleForm.auth_permissions[i].auth_list != null) {
@@ -401,6 +392,7 @@ export default {
         }
       }
     },
+    // 权限转为中文
     get_auth(auth_permissions) {
       var auth_str = ''
       for (var i in auth_permissions) {

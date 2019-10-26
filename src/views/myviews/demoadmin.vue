@@ -122,7 +122,7 @@
       title="确认删除"
       width="30%"
       center>
-      <span>是否确认删除，删除后不可恢复？</span>
+      <div style="text-align: center;">是否确认删除，删除后不可恢复？</div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="centerDialog_delete = false">取 消</el-button>
         <el-button size="small" type="primary" @click="true_delete">确 定</el-button>
