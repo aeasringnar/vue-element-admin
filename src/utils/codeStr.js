@@ -94,10 +94,17 @@ function creatCode(obj, dir_name) {
               inactive-color="#ff4949" />
           </el-form-item>
           <el-form-item label="日期" prop="date">
-            <el-date-picker size="small" v-model="ruleForm.date" type="date" placeholder="选择日期" style="width: 100%;"/>
+            <el-date-picker size="small" v-model="ruleForm.date" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 100%;"/>
           </el-form-item>
           <el-form-item label="时间" prop="time">
-            <el-time-picker size="small" v-model="ruleForm.time" type="fixed-time" placeholder="选择时间" style="width: 100%;"/>
+            <el-time-picker size="small" v-model="ruleForm.time" type="fixed-time" value-format="HH:mm:ss" placeholder="选择时间" style="width: 100%;"/>
+          </el-form-item>
+          <el-form-item label="日期区间">
+            <el-date-picker size="small" v-model="ruleForm.date_time" type="daterange" value-format="yyyy-MM-dd" 
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期" 
+            style="width: 100%;"/>
           </el-form-item>
           <el-form-item label="类型" prop="type">
             <el-checkbox-group size="small" v-model="ruleForm.type">
@@ -117,7 +124,7 @@ function creatCode(obj, dir_name) {
             <el-input size="small" v-model="ruleForm.desc" type="textarea"/>
           </el-form-item>
           <el-form-item label="富文本编辑器" prop="rule_h5">
-            <!-- <tinymce v-model="ruleForm.rule_h5"/> -->
+            <tinymce v-model="ruleForm.rule_h5"/>
           </el-form-item>
         </el-form>
       </div>
@@ -170,13 +177,14 @@ import { GetAjax, PostAjax, PatchAjax, DeleteAjax } from '@/api/myapi'
 import datetime from 'date-and-time'
 import Mysearch from '@/components/SearchField/index2.vue'
 import Pagination from '@/components/Pagination'
-import UploadImage from '@/components/Upload/singleImage.vue'
-import UploadFile from '@/components/Upload/singleFile.vue'
-// import Tinymce from '@/components/Tinymce/index.vue'
+import UploadImage from '@/components/Upload/singleImage.vue'// 单一图片
+import MultiImage from '@/components/Upload/multiImage.vue' // 多张图片 limit 默认为5张
+import UploadFile from '@/components/Upload/singleFile.vue' // 单一&多个文件 由limit参数 控制 默认为3个
+import Tinymce from '@/components/Tinymce/index.vue'
 
 export default {
   name: '${obj.object_name}Manage',
-  components: { Mysearch, Pagination, UploadImage, UploadFile },
+  components: { Mysearch, Pagination, UploadImage, MultiImage, UploadFile, Tinymce },
   data() {
     return {
       centerDialog: false,
@@ -194,6 +202,7 @@ export default {
         sort: '',
         date: '',
         time: '',
+        date_time:'',
         desc: ''
       },
       rules: {
@@ -205,6 +214,9 @@ export default {
         ],
         img_url: [
           { required: true, message: '请上传图片', trigger: 'change' }
+        ],
+        rule_h5: [
+          { required: true, message: '请输入富文本', trigger: 'change' }
         ],
         sort: [
           { required: true, type: 'number', message: '请输入排序序号', trigger: 'blur' },
@@ -250,6 +262,8 @@ export default {
     }
   },
   created: function() {
+    // this.$route.params 路由跳转携带的参数 $router.go(-1) 返回上一级
+    // this.$router.push({ name: 'name1', params: { good_id: 1 }}) 通过name指定跳转，并携带参数
     this.get_need_data(this.my_pagination)
   },
   methods: {
@@ -303,13 +317,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (formName == 'ruleForm') {
-            // datetime.format(this.ruleForm.date, 'YYYY-MM-DD')
-            // console.log(datetime.format(this.ruleForm.time, 'hh:mm:ss'))
-            console.log(this.ruleForm)
-            // this.post_need_data(this.ruleForm)
+            var data = JSON.parse(JSON.stringify(this.ruleForm))
+            console.log(data)
+            // this.post_need_data(data)
           } else {
-            console.log(this.ruleForm_patch)
-            // this.patch_need_data(this.ruleForm_patch)
+            var data = JSON.parse(JSON.stringify(this.ruleForm))
+            console.log(data)
+            // this.patch_need_data(data)
           }
         } else {
           console.log('error submit!!')
