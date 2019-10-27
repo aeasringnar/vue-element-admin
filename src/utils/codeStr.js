@@ -372,6 +372,10 @@ export default {
       this.my_pagination.page = 1
       this.my_pagination.search_type = val
       this.get_need_data(this.my_pagination)
+    },
+    // 使用剪裁多图组件时 使用
+    multi_finish(val) {
+      console.log('查看子组件传回来的值：', val)
     }
   }
 }

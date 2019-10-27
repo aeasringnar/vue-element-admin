@@ -250,7 +250,7 @@ export default {
   },
   methods: {
     get_need_data(params) {
-      GetAjax('/system/users/', params).then(response => {
+      GetAjax('/user/', params).then(response => {
         const data = response.data
         console.log('得到列表数据：',data)
         this.page_datas = data
@@ -258,7 +258,7 @@ export default {
       })
     },
     get_auth_data(params) {
-      GetAjax('/system/auths/', params).then(response => {
+      GetAjax('/auth/', params).then(response => {
         this.auth_datas = response.data
       })
     },
