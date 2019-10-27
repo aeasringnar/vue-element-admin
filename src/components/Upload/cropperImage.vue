@@ -33,7 +33,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
         <el-button type="primary" @click="finish" :loading="loading">确认</el-button>
       </div>
     </el-dialog>
@@ -113,6 +113,7 @@ export default {
           // console.log(res.data.data[0])
           this.$emit('input', res.data.data[0]) // 将实际地址返回给父组件 双向绑定
           this.loading = false
+          this.dialogVisible = false
         }).catch(res => {
           console.log('error：',res)
         })
