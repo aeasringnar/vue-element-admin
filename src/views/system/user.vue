@@ -8,7 +8,11 @@
         <el-button size="small" type="success" @click="to_refish" :loading="refish_loading">刷新</el-button>
         <p></p>
       </el-col>
-      <el-col :span="8"><p/></el-col>
+      <el-col :span="8">
+        <el-date-picker v-model="filter_time" type="datetimerange" range-separator="至" size="small" style="width: 100%"
+        value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始时间" end-placeholder="结束时间" @change="change_time" />
+      </el-col>
+      <!-- <el-col :span="8"><p/></el-col> -->
       <!-- <el-col :span="4">
         <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="filter_change">
           <el-option label="全部分类" value=""/>
@@ -244,7 +248,8 @@ export default {
         search_type: '',
       },
       auth_datas: [],
-      refish_loading: false
+      refish_loading: false,
+      filter_time: []
     }
   },
   created: function() {
@@ -377,6 +382,15 @@ export default {
         this.my_pagination.count = response.count
         this.refish_loading = false
       })
+    },
+    // 时间过滤
+    change_time(val) {
+      if (val != null) {
+        this.my_pagination.filter_time = val.join(',')
+      } else {
+        this.my_pagination.filter_time = ''
+      }
+      this.get_need_data(this.my_pagination)
     }
   }
 }
