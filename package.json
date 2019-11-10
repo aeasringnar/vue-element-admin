@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "^1.1.0",
-    "axios": "0.18.0",
+    "axios": "0.19.0",
     "babel-polyfill": "^6.26.0",
     "date-and-time": "^0.6.3",
     "element-ui": "2.12.0",
