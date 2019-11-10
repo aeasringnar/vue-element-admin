@@ -31,12 +31,14 @@ function creatCode(obj, dir_name) {
   <div class="app-container">
     <el-row>
       <el-col :span="10">
+        <!-- <el-button size="small" type="primary" @click="$router.go(-1)">返回</el-button> -->
         <el-button v-if="$store.getters.user_obj.group.group_type === 'SuperAdmin' || $store.getters.auth_json.${dir_name}_${obj.object_name}.auth_create" size="small" type="primary" @click="new_data">新增</el-button>
+        <el-button size="small" type="success" @click="to_refish" :loading="refish_loading">刷新</el-button>
         <p></p>
       </el-col>
       <el-col :span="4"><p/></el-col>
       <el-col :span="4">
-        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="filter_change">
+        <el-select size="small" v-model="my_pagination.search_type" placeholder="请选择" style="width: 100%" @change="filter_change($event, 'search_type')">
           <el-option label="全部分类" value=""/>
           <el-option v-for="data in select_type" :key="data.key" :label="data.name" :value="data.key"/>
         </el-select>
@@ -72,6 +74,7 @@ function creatCode(obj, dir_name) {
       v-dialogDrag
       title="新增"
       width="60%"
+      @close="resetForm('ruleForm')"
       center>
       <div>
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px">
@@ -152,9 +155,10 @@ function creatCode(obj, dir_name) {
       v-dialogDrag
       title="编辑"
       width="60%"
+      @close="resetForm('ruleForm_patch')"
       center>
       <div>
-        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules_patch" label-width="100px">
+        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules" label-width="100px">
           
         </el-form>
       </div>
@@ -259,7 +263,8 @@ export default {
           key: '1',
           name:'分类二'
         }
-      ]
+      ],
+      refish_loading: false
     }
   },
   created: function() {
@@ -328,6 +333,7 @@ export default {
           }
         } else {
           console.log('error submit!!')
+          console.log(this.$refs[formName].model)
           return false
         }
       })
@@ -368,14 +374,36 @@ export default {
       this.get_need_data(this.my_pagination)
     },
     // 过滤相关
-    filter_change(val) {
+    filter_change(val, type_key) {
       this.my_pagination.page = 1
-      this.my_pagination.search_type = val
+      // this.my_pagination.search_type = val
+      this.my_pagination[type_key] = val
       this.get_need_data(this.my_pagination)
     },
     // 使用剪裁多图组件时 使用
     multi_finish(val) {
       console.log('查看子组件传回来的值：', val)
+    },
+    // 刷新按钮
+    to_refish() {
+      this.refish_loading = true
+      GetAjax('/${obj.object_name}/', this.my_pagination).then(response => {
+        const data = response.data
+        console.log('刷新成功：',data)
+        this.page_datas = data
+        this.my_pagination.count = response.count
+        this.refish_loading = false
+      })
+    },
+    // 状态转换函数
+    get_status(status) {
+      if (status == 0) {
+        return '状态一'
+      } else if (status == 1) {
+        return '状态二'
+      } else (status == 2) {
+        return '状态三'
+      }
     }
   }
 }

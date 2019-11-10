@@ -3,7 +3,9 @@
   <div class="app-container">
     <el-row>
       <el-col :span="10">
+        <!-- <el-button size="small" type="primary" @click="$router.go(-1)">返回</el-button> -->
         <el-button v-if="$store.getters.user_obj.group.group_type === 'SuperAdmin' || $store.getters.auth_json.auth.auth_create" size="small" type="primary" @click="new_data">新增</el-button>
+        <el-button size="small" type="success" @click="to_refish" :loading="refish_loading">刷新</el-button>
         <p></p>
       </el-col>
       <el-col :span="8"><p/></el-col>
@@ -238,7 +240,8 @@ export default {
         count: 0,
         search: '',
         search_type: '',
-      }
+      },
+      refish_loading: false
     }
   },
   created: function() {
@@ -302,6 +305,7 @@ export default {
           }
         } else {
           console.log('error submit!!')
+          console.log(this.$refs[formName].model)
           return false
         }
       })
@@ -418,6 +422,17 @@ export default {
         }
       }
       return auth_str
+    },
+    // 刷新按钮
+    to_refish() {
+      this.refish_loading = true
+      GetAjax('/auth/', this.my_pagination).then(response => {
+        const data = response.data
+        console.log('刷新成功：',data)
+        this.page_datas = data
+        this.my_pagination.count = response.count
+        this.refish_loading = false
+      })
     }
   }
 }
