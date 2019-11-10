@@ -37,7 +37,16 @@
           <el-input size="small" v-model="ruleForm_patch.username"/>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input size="small" type="password" v-model="ruleForm_patch.password"/>
+          <!-- <el-input size="small" type="password" v-model="ruleForm_patch.password"/> -->
+          <el-input
+            size="small"
+            :type="pwdType"
+            v-model="ruleForm_patch.password"
+            auto-complete="on"
+            placeholder="请输入密码"/>
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="show_icon" />
+          </span>
         </el-form-item>
         <el-form-item label="手机号" prop="mobile">
           <el-input size="small" v-model="ruleForm_patch.mobile"/>
@@ -91,6 +100,8 @@ export default {
         ],
       },
       ruleForm_patch: {},
+      pwdType: 'password',
+      show_icon: 'eye'
     }
   },
   created: function() {
@@ -145,7 +156,17 @@ export default {
         this.ruleForm_patch.auth = row.auth.id
       }
       this.centerDialog_patch = true
-    }
+    },
+    // 是否显示密码按钮
+    showPwd() {
+      if (this.pwdType === 'password') {
+        this.pwdType = ''
+        this.show_icon = 'eye_show'
+      } else {
+        this.pwdType = 'password'
+        this.show_icon = 'eye'
+      }
+    },
   }
 }
 </script>
@@ -177,5 +198,14 @@ export default {
   height: 180px;
   display: block;
   border-radius: 6px;
+}
+.show-pwd {
+  position: absolute;
+  right: 15px;
+  top: 2px;
+  font-size: 16px;
+  color: #889aa4;
+  cursor: pointer;
+  user-select: none;
 }
 </style>
