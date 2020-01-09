@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>富文本编辑器</h2>
+    <!-- <h2>富文本编辑器</h2> -->
     <editor id='tinymce' v-model='tinymceHtml' :init='init' @input="to_input"></editor>
-    <div v-html='tinymceHtml'></div>
+    <div v-html='newHtml'></div>
   </div>
 </template>
 
@@ -33,11 +33,12 @@ export default {
     return {
       uploadUrl: process.env.BASE_API + '/uploadfile/',
       headers: {'Authorization': 'bearer ' + store.getters.token},
-      tinymceHtml: this.value,
+      // tinymceHtml: this.value,
+      newHtml: ``,
       init: {
-        language_url: '/static/tinymce/zh_CN.js',
+        language_url: './static/tinymce/zh_CN.js',
         language: 'zh_CN',
-        skin_url: '/static/tinymce/skins/lightgray',
+        skin_url: './static/tinymce/skins/lightgray',
         height: 300,
         plugins: 'link lists image code table colorpicker textcolor wordcount contextmenu',
         toolbar:
@@ -55,9 +56,22 @@ export default {
   mounted () {
     tinymce.init({})
   },
+  computed: {
+    tinymceHtml:{
+      get: function() {
+        this.newHtml = this.value
+        return this.value
+      },
+      set: function (newValue) {
+        this.newHtml = newValue
+        return newValue
+      }
+    }
+  },
   methods: {
     to_input() {
-      this.$emit('input', Buffer.from(this.tinymceHtml).toString('base64')) // 转化为base64返回
+      this.$emit('htmlFinish', this.newHtml)
+      // this.$emit('input', Buffer.from(this.tinymceHtml).toString('base64')) // 转化为base64返回
       // console.log(Buffer.from(this.content, 'base64').toString()) base64转成String
     },
     handleImgUpload (blobInfo, success, failure) {

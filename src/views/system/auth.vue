@@ -127,7 +127,7 @@
       width="60%"
       center>
       <div>
-        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules_patch" label-width="100px">
+        <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules" label-width="100px">
           <el-form-item label="权限名称" prop="auth_type">
             <el-input size="small" v-model="ruleForm_patch.auth_type"/>
           </el-form-item>
@@ -228,9 +228,6 @@ export default {
         ],
       },
       ruleForm_patch: {
-        
-      },
-      rules_patch: {
         
       },
       delete_data: {},

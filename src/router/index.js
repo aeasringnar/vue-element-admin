@@ -76,6 +76,10 @@ export const constantRouterMap = [
       },
     ]
   },
+  {
+    path: '/redirect/:path*',
+    component: () => import('@/views/redirect')
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

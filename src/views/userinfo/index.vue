@@ -33,10 +33,10 @@
       center>
       <div>
         <el-form ref="ruleForm_patch" :model="ruleForm_patch" :rules="rules" label-width="100px">
-        <el-form-item label="用户名" prop="username">
+        <el-form-item label="用户名" prop="username" style="width: 80%;">
           <el-input size="small" v-model="ruleForm_patch.username"/>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" style="width: 80%;">
           <!-- <el-input size="small" type="password" v-model="ruleForm_patch.password"/> -->
           <el-input
             size="small"
@@ -48,16 +48,16 @@
             <svg-icon :icon-class="show_icon" />
           </span>
         </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
+        <el-form-item label="手机号" prop="mobile" style="width: 80%;">
           <el-input size="small" v-model="ruleForm_patch.mobile"/>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
+        <el-form-item label="邮箱" prop="email" style="width: 80%;">
           <el-input size="small" v-model="ruleForm_patch.email"/>
         </el-form-item>
-        <el-form-item label="姓名" prop="real_name">
+        <el-form-item label="姓名" prop="real_name" style="width: 80%;">
           <el-input size="small" v-model="ruleForm_patch.real_name"/>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" style="width: 80%;">
           <el-input size="small" v-model="ruleForm_patch.content" type="textarea"/>
         </el-form-item>
         </el-form>

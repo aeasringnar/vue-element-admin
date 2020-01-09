@@ -23,6 +23,15 @@
           <svg-icon :icon-class="show_icon" />
         </span>
       </el-form-item>
+      <el-form-item prop="code">
+        <span class="svg-container">
+          <svg-icon icon-class="code" />
+        </span>
+        <el-input type="text" v-model="loginForm.code" placeholder="请输入验证码" @keyup.enter.native="handleLogin" />
+        <span class="show-pwd" @click="change_code">
+          <identify-code :identifyCode="new_code" />
+        </span>
+      </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           登 录
@@ -39,9 +48,11 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+import IdentifyCode from '@/components/IdentifyCode/index.vue'
 
 export default {
   name: 'Login',
+  components: { IdentifyCode },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -64,12 +75,14 @@ export default {
       },
       loginRules: {
         username: [{ required: true, message: '请输入帐号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
       loading: false,
       pwdType: 'password',
       redirect: undefined,
-      show_icon: 'eye'
+      show_icon: 'eye',
+      new_code: ''
     }
   },
   watch: {
@@ -79,6 +92,9 @@ export default {
       },
       immediate: true
     }
+  },
+  created: function() {
+    this.change_code()
   },
   methods: {
     showPwd() {
@@ -93,18 +109,38 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          if (this.loginForm.code == this.new_code) {
+            this.loading = true
+            this.$store.dispatch('Login', this.loginForm).then(() => {
+              this.loading = false
+              this.$router.push({ path: this.redirect || '/' })
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            this.$message({
+              showClose: true,
+              message: '验证码错误！',
+              type: 'warning'
+            })
+          }
         } else {
           console.log('error submit!!')
+          console.log(this.loginForm.code, this.new_code, this.loginForm.code == this.new_code)
           return false
         }
       })
+    },
+    randomWord(){
+      var str = ""
+      for(var i=0; i<4; i++){
+        var pos = Math.floor(Math.random()*10)
+        str += pos
+      }
+      return str
+    },
+    change_code() {
+      this.new_code = this.randomWord()
     }
   }
 }

@@ -236,9 +236,6 @@ export default {
       ruleForm_patch: {
         
       },
-      rules_patch: {
-        
-      },
       delete_data: {},
       my_pagination: {
         page: 1,
